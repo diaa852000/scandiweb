@@ -1,0 +1,9 @@
+{
+    "name": "scandiweb/api",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "app\\" : "src/"
+        }
+    }
+}
