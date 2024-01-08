@@ -6,37 +6,18 @@ use app\modules\Product;
 class BookProduct extends Product
 {
     protected $weight;
-    protected DbConnect $db;
 
-    public function __construct($sku, $name, $price, $productType, $weight)
+    public function __construct($sku, $name, $price, $productType, DbConnect $db, $weight)
     {
-        parent::__construct($sku, $name, $price, $productType);
+        parent::__construct($sku, $name, $price, $productType, $db);
         $this->weight = $weight;
     }
 
-
-    public function create($data)
+    
+    protected function handleAdditionalProperties($data)
     {
-        try {
-            $this->db->getConnection()->beginTransaction();
-
-            parent::create($data);
-
-            $this->insertProductDetails($data);
-
-            $this->updateProductValue($data);
-
-            $this->db->getConnection()->commit();
-
-            $response = ['status' => 1, 'message' => 'Record created'];
-            print_r($response);
-
-        } catch (\Exception $e) {
-            $this->db->getConnection()->rollBack();
-
-            $response = ['status' => 0, 'message' => 'Failed to create record: ' . $e->getMessage()];
-            print_r($response);
-        }
+        $this->insertProductDetails($data);
+        $this->updateProductValue();
     }
 
     private function insertProductDetails($data)

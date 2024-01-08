@@ -1,6 +1,7 @@
 <?php namespace app\api;
 
 use app\config\DbConnect;
+use Error;
 
 class Read 
 {
@@ -13,11 +14,18 @@ class Read
 
     public function get()
     {
-        $sql = "SELECT * FROM products;";
-        $stmt = $this->db->getConnection()->prepare($sql);
-        $stmt->execute();
-        $products = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        return $products;
+        try
+        {
+            $sql = "SELECT * FROM products;";
+            $stmt = $this->db->getConnection()->prepare($sql);
+            $stmt->execute();
+            $products = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            return $products;
+        }
+        catch (\PDOException $e)
+        {
+            throw new Error("Error Fetching Data" . $e);
+        }
     }
 }
 

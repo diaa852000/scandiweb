@@ -7,37 +7,21 @@ class FurnitureProduct extends Product
     protected $height;
     protected $width;
     protected $length;
-    protected DbConnect $db;
 
-    public function __construct($sku, $name, $price, $productType, $height, $width, $length)
+    public function __construct($sku, $name, $price, $productType,DbConnect $db ,$height, $width, $length)
     {
-        parent::__construct($sku, $name, $price, $productType);
+        parent::__construct($sku, $name, $price, $productType, $db);
+
         $this->height = $height;
         $this->width = $width;
         $this->length = $length;
     }
 
-    public function create($data)
+    
+    protected function handleAdditionalProperties($data)
     {
-        try {
-            $this->db->getConnection()->beginTransaction();
-
-            parent::create($data);
-
-            $this->insertProductDetails($data);
-
-            $this->updateProductValue($data);
-
-            $this->db->getConnection()->commit();
-
-            $response = ['status' => 1, 'message' => 'Record created'];
-            print_r($response);
-        } catch (\Exception $e) {
-            $this->db->getConnection()->rollBack();
-
-            $response = ['status' => 0, 'message' => 'Failed to create record: ' . $e->getMessage()];
-            print_r($response);
-        }
+        $this->insertProductDetails($data);
+        $this->updateProductValue();
     }
 
 

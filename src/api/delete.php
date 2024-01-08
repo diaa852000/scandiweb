@@ -24,7 +24,9 @@ class Delete
             $this->db->getConnection()->commit();
 
             return json_encode(['success' => true, 'message' => 'Products deleted successfully']);
-        } catch (\PDOException $e) {
+        } 
+        catch (\PDOException $e) 
+        {
             $this->db->getConnection()->rollBack();
 
             return json_encode(['success' => false, 'message' => 'Error deleting products: ' . $e->getMessage()]);
@@ -43,6 +45,7 @@ class Delete
 
         $stmtDeleteDetails->execute();
     }
+
     private function deleteProduct($product_ids)
     {
         $sqlDeleteProducts = "DELETE FROM products WHERE SKU IN (" . implode(',', array_fill(0, count($product_ids), '?')) . ")";

@@ -12,7 +12,7 @@ try {
     $connection = $dbConnect->getConnection();
 } catch (PDOException $e) {
     echo "Database connection failed: " . $e->getMessage();
-    exit;
+    exit();
 }
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -20,19 +20,18 @@ $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
     case "POST":
         $data = json_decode(file_get_contents("php://input"), true);
-        if (isset($data['product_ids']) && is_array($data['product_ids'])) {
+
+        if (empty($data)) {
+            return "Choose products to be deleted, You chose no product";
+        } elseif (isset($data['product_ids']) && is_array($data['product_ids'])) {
             $deleteProducts = new Delete($dbConnect);
             $result = $deleteProducts->deleteAll($data['product_ids']);
+
+            header('Content-Type: application/json');
             echo json_encode($result);
+            echo json_encode(['success' => 'true', 'message' => 'Successfully Deleted product(s)']);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Invalid data provided for deletion']);
+            echo json_encode(['success' => 'false', 'message' => 'Invalid data provided for deletion']);
         }
         break;
-
-    default:
-        http_response_code(405); // Method Not Allowed
-        echo json_encode(['error' => 'Method Not Allowed']);
-        
-    
 }
-
