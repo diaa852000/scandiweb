@@ -1,11 +1,12 @@
 <?php
 
 require_once __DIR__ . '/vendor/autoload.php';
+require_once('src/includes/cors.php');
 
 use app\config\DbConnect;
 use app\api\Delete;
 
-require_once('src/includes/cors.php');
+// require_once('')
 
 try {
     $dbConnect = new DbConnect();

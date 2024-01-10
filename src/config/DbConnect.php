@@ -6,10 +6,12 @@ use PDOException;
 class DbConnect 
 {
     private $server = 'localhost';
-    private $dbname = 'scandiweb';
+    private $dbname = 'api';
     private $user = 'root';
     private $pwd = 'password123';
-    private $error = null;
+    // private $user = 'id21765076_diaaeltaiby';
+    //prot=3306
+    // private $pwd = '';
     protected $connection;
 
     public function __construct()
@@ -31,14 +33,5 @@ class DbConnect
         return $this->connection;
     }
 
-
-    
-    public function getError(){
-        return $this->error;
-    }
-
-    public function setError($error){
-        return $this->error = $error;
-    }
 }
 

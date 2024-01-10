@@ -18,7 +18,7 @@ class Delete
         try {
             $this->db->getConnection()->beginTransaction();
 
-            $this->deleteDetails($product_ids);
+            // $this->deleteDetails($product_ids);
             $this->deleteProduct($product_ids);
 
             $this->db->getConnection()->commit();
@@ -33,18 +33,18 @@ class Delete
         }
     }
 
-    private function deleteDetails($product_ids)
-    {
-        $sqlDeleteDetails = "DELETE FROM product_details WHERE SKU IN (" . implode(',', array_fill(0, count($product_ids), '?')) . ")";
-        $stmtDeleteDetails = $this->db->getConnection()->prepare($sqlDeleteDetails);
+    // private function deleteDetails($product_ids)
+    // {
+    //     $sqlDeleteDetails = "DELETE FROM product_details WHERE SKU IN (" . implode(',', array_fill(0, count($product_ids), '?')) . ")";
+    //     $stmtDeleteDetails = $this->db->getConnection()->prepare($sqlDeleteDetails);
 
-        foreach ($product_ids as $key => $productID) 
-        {
-            $stmtDeleteDetails->bindValue(($key + 1), $productID, \PDO::PARAM_STR);
-        }
+    //     foreach ($product_ids as $key => $productID) 
+    //     {
+    //         $stmtDeleteDetails->bindValue(($key + 1), $productID, \PDO::PARAM_STR);
+    //     }
 
-        $stmtDeleteDetails->execute();
-    }
+    //     $stmtDeleteDetails->execute();
+    // }
 
     private function deleteProduct($product_ids)
     {

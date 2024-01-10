@@ -1,12 +1,10 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__. '/vendor/autoload.php';
+require_once('src/includes/cors.php');
 
 use app\api\Read;
 use app\config\DbConnect;
-
-require_once('src/includes/cors.php');
-
 
 try {
     $dbConnect = new DbConnect();

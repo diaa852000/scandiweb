@@ -1,13 +1,10 @@
-<?php 
+<?php
 
 require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/src/includes/cors.php';
 
 use app\config\DbConnect;
-use app\modules\BookProduct;
-use app\modules\DVDProduct;
-use app\modules\FurnitureProduct;
-
-require_once('src/includes/cors.php');
+use app\dbGateway\ProductFactory;
 
 try {
     $dbConnect = new DbConnect();
@@ -24,50 +21,33 @@ if ($method == "OPTIONS") {
     exit();
 }
 
-if($method == "POST")
-{
+if ($method == "POST") {
+
     $data = json_decode(file_get_contents('php://input'));
-    if (empty($data)) {
+
+    if (empty($data)) 
+    {
         $response = ['status' => 0, 'message' => 'Error: Invalid or empty data received.'];
     } 
     else 
     {
-        $productType = $data->Product_Type; 
+        try {
+            $productType = $data->Product_Type;
+            $product = ProductFactory::createProduct($productType, $dbConnect, $data);
+            
+            $product->create($data);
 
-        $productClasses = [
-            'DVD' => DVDProduct::class,
-            'Book' => BookProduct::class,
-            'Furniture' => FurnitureProduct::class
-        ];  
-
-        if(isset($productClasses[$productType]))
+            $response = ['status' => 1, 'message' => 'Record created'];
+        } 
+        catch (\Throwable $e)
         {
-            $productClass = $productClasses[$productType];
-
-            $product = new $productClass(
-                $data->SKU,
-                $data->Name,
-                $data->Price,
-                $data->Product_Type,
-                $dbConnect,
-
-                $data->Size ?? null, 
-                
-                $data->Weight ?? null,
-                
-                $data->Height ?? null,
-                $data->Width ?? null,
-                $data->Length ?? null,
-            );
-
-            $response = $product->create($data);
+            $response = ['status' => 0, 'message' => 'Failed to create record: ' . $e->getMessage()];
+            throw $e;
         }
-        else
-        {
-            $response = ['status' => 0, 'message' => 'Error: Unknown Product type'];
-        }
+
+        header('Content-Type: application/json');
+        echo json_encode($response);
     }
 
-    exit;
-
+    exit();
 }
